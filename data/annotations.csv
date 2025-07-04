@@ -1,0 +1,5 @@
+text,annotations
+Ceci est un exemple de texte à annoter avec des entités nommées comme Paris et Google.,"[{""start"": 79, ""end"": 85, ""label"": ""toto"", ""text"": ""Google""}, {""start"": 12, ""end"": 19, ""label"": ""titi"", ""text"": ""exemple""}]"
+Ceci est un exemple de 2 à annoter avec des entités nommées comme Paris et Google.,"[{""start"": 75, ""end"": 81, ""label"": ""toto"", ""text"": ""Google""}, {""start"": 12, ""end"": 19, ""label"": ""titi"", ""text"": ""exemple""}]"
+Ceci est un exemple de 3 à annoter avec des entités nommées comme Paris et Google.,"[{""start"": 75, ""end"": 81, ""label"": ""toto"", ""text"": ""Google""}, {""start"": 12, ""end"": 19, ""label"": ""titi"", ""text"": ""exemple""}]"
+Ceci est un exemple de 4 à annoter avec des entités nommées comme Paris et Google.,"[{""start"": 75, ""end"": 81, ""label"": ""toto"", ""text"": ""Google""}, {""start"": 12, ""end"": 19, ""label"": ""titi"", ""text"": ""exemple""}]"
