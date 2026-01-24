@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier le code de l'application
 COPY app.py .
+COPY utils.py .
 
 # Créer le dossier data
 RUN mkdir -p data
