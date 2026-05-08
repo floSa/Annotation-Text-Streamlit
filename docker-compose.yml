@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   text-annotation:
     build: .
@@ -10,4 +8,5 @@ services:
     environment:
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
       - STREAMLIT_SERVER_PORT=8501
+    restart: unless-stopped
     container_name: text-annotation-service

@@ -1,0 +1,45 @@
+# Environnement / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environnements virtuels
+.venv/
+venv/
+env/
+ENV/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Données utilisateur (le repo fournit data/annotations.csv comme exemple ;
+# tout autre CSV personnel ne doit pas être commité)
+data/*.csv
+!data/annotations.csv
+
+# Lockfiles à inclure (ne pas ignorer)
+!uv.lock
+!poetry.lock
