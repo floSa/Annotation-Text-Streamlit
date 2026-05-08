@@ -9,11 +9,8 @@ PREDEFINED_COLORS = [
 ]
 
 def load_csv(path):
-    """Charge un fichier CSV et retourne un DataFrame."""
-    try:
-        return pd.read_csv(path, sep=';')
-    except Exception as e:
-        raise e
+    """Charge un fichier CSV (séparateur ';') et retourne un DataFrame."""
+    return pd.read_csv(path, sep=';')
 
 def extract_unique_labels(df, annotations_column='annotations'):
     """Extrait la liste unique des labels présents dans le DataFrame."""
@@ -81,41 +78,46 @@ def align_tokens_with_annotations(text, annotations):
         
     return aligned_data
 
-def convert_to_iob(aligned_data):
-    """Format IOB (Inside, Outside, Beginning) standard."""
-    return aligned_data
+def _split_tag(tag):
+    """Coupe un tag 'B-LABEL' / 'I-LABEL' en (prefix, label). Retourne (None, None) si tag = 'O'."""
+    if tag == "O" or "-" not in tag:
+        return None, None
+    prefix, label = tag.split("-", 1)
+    return prefix, label
+
 
 def convert_to_bilou(aligned_data):
     """
     Convertit IOB vers BILOU (Begin, Inside, Last, Outside, Unit).
-    B-LABEL, I-LABEL, I-LABEL -> B-LABEL, I-LABEL, L-LABEL
-    B-LABEL -> U-LABEL
+    B-X seul ou suivi d'un non-I-X     -> U-X
+    B-X suivi de I-X (avec même label) -> B-X
+    I-X suivi de I-X (même label)      -> I-X
+    I-X suivi d'autre chose            -> L-X
     """
     bilou_data = []
     count = len(aligned_data)
-    
+
     for i in range(count):
         token, tag = aligned_data[i]
-        
+
         if tag == "O":
             bilou_data.append((token, "O"))
             continue
-            
-        prefix, label = tag.split("-", 1)
-        
-        next_tag = aligned_data[i+1][1] if i + 1 < count else "O"
-        
+
+        prefix, label = _split_tag(tag)
+        next_tag = aligned_data[i + 1][1] if i + 1 < count else "O"
+        next_prefix, next_label = _split_tag(next_tag)
+
+        # On ne continue une entité que si le prochain token est I- du MÊME label
+        continues = next_prefix == "I" and next_label == label
+
         if prefix == "B":
-            if next_tag.startswith("I-") and next_tag.endswith(label):
-                bilou_data.append((token, f"B-{label}"))
-            else:
-                bilou_data.append((token, f"U-{label}")) # Unit: B suivi de non-I ou fin
+            bilou_data.append((token, f"B-{label}" if continues else f"U-{label}"))
         elif prefix == "I":
-            if next_tag.startswith("I-") and next_tag.endswith(label):
-                bilou_data.append((token, f"I-{label}"))
-            else:
-                bilou_data.append((token, f"L-{label}")) # Last: I suivi de non-I ou fin
-                
+            bilou_data.append((token, f"I-{label}" if continues else f"L-{label}"))
+        else:
+            bilou_data.append((token, tag))
+
     return bilou_data
 
 def export_to_conll(df, format_type="IOB"):
@@ -129,17 +131,19 @@ def export_to_conll(df, format_type="IOB"):
         # Récup annotations
         val = row.get('annotations', [])
         if isinstance(val, str):
-            try: annotations = json.loads(val)
-            except: annotations = []
+            try:
+                annotations = json.loads(val)
+            except json.JSONDecodeError:
+                annotations = []
         elif isinstance(val, list):
             annotations = val
-            
+
         aligned = align_tokens_with_annotations(text, annotations)
-        
+
         if format_type == "BILOU":
             final_data = convert_to_bilou(aligned)
         else:
-            final_data = aligned # Default IOB
+            final_data = aligned  # Default IOB
             
         for token, tag in final_data:
             output.append(f"{token} {tag}")
@@ -154,11 +158,13 @@ def export_json_span(df):
         text = str(row.iloc[0])
         val = row.get('annotations', [])
         if isinstance(val, str):
-            try: annotations = json.loads(val)
-            except: annotations = []
+            try:
+                annotations = json.loads(val)
+            except json.JSONDecodeError:
+                annotations = []
         else:
             annotations = val
-            
+
         results.append({
             "text": text,
             "annotations": annotations

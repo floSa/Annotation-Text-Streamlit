@@ -1,10 +1,12 @@
-import streamlit as st
-import pandas as pd
+import html
 import json
 import os
+
+import pandas as pd
+import streamlit as st
 from annotated_text import annotated_text
-from io import StringIO
-import utils # Notre nouveau module
+
+import utils
 
 # Configuration
 st.set_page_config(
@@ -68,8 +70,8 @@ def load_file_logic(df, path=None):
                     st.session_state.annotations[idx] = val
             else:
                 st.session_state.annotations[idx] = []
-        except:
-             st.session_state.annotations[idx] = []
+        except (json.JSONDecodeError, TypeError, KeyError):
+            st.session_state.annotations[idx] = []
     
     # Extraction AUTO des labels
     extracted = utils.extract_unique_labels(st.session_state.df)
@@ -144,7 +146,7 @@ def main():
             st.rerun()
             
         st.markdown("---")
-        st.subheader("Extrat")
+        st.subheader("Export")
         export_format = st.selectbox("Format", ["Span (JSON)", "IOB (CoNLL)", "BILOU (CoNLL)"])
         
         if st.button("Générer l'export"):
@@ -171,11 +173,13 @@ def main():
     with col_labels:
         st.subheader("🏷️ Labels")
         
-        # Liste des labels
+        # Liste des labels (label échappé pour éviter XSS si saisie de balises)
         for label, color in st.session_state.labels.items():
+            safe_label = html.escape(label)
+            safe_color = html.escape(color)
             st.markdown(
-                f"<div style='background-color: {color}; padding: 5px; border-radius: 4px; "
-                f"color: white; text-align: center; margin-bottom: 5px; font-size: 0.9em;'>{label}</div>",
+                f"<div style='background-color: {safe_color}; padding: 5px; border-radius: 4px; "
+                f"color: white; text-align: center; margin-bottom: 5px; font-size: 0.9em;'>{safe_label}</div>",
                 unsafe_allow_html=True
             )
             
@@ -211,7 +215,8 @@ def main():
             current_row = st.session_state.df.iloc[st.session_state.current_index]
             text_col = "text" if "text" in st.session_state.df.columns else st.session_state.df.columns[0]
             current_text = str(current_row[text_col])
-        except:
+        except (IndexError, KeyError) as e:
+            st.warning(f"Impossible de charger la ligne courante : {e}")
             current_text = ""
 
         current_annotations = st.session_state.annotations.get(st.session_state.current_index, [])
