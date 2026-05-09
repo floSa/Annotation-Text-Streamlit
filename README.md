@@ -16,7 +16,7 @@ Application Streamlit simple et efficace pour l'annotation de texte (NER - Named
 ## Prérequis
 
 *   [Docker](https://www.docker.com/) et [Docker Compose](https://docs.docker.com/compose/)
-*   Ou Python 3.9+ pour une exécution locale
+*   Ou Python 3.12+ + [uv](https://docs.astral.sh/uv/) pour une exécution locale
 
 ## Installation et Lancement
 
@@ -25,19 +25,23 @@ Application Streamlit simple et efficace pour l'annotation de texte (NER - Named
 1.  Cloner ce dépôt.
 2.  Lancer le service :
     ```bash
-    docker-compose up --build
+    docker compose up --build
     ```
 3.  Accéder à l'application dans le navigateur : [http://localhost:8501](http://localhost:8501)
 
 ### En local (Sans Docker)
 
-1.  Installer les dépendances :
+1.  Installer [uv](https://docs.astral.sh/uv/) si nécessaire :
     ```bash
-    pip install -r requirements.txt
+    curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
-2.  Lancer l'application :
+2.  Synchroniser les dépendances :
     ```bash
-    streamlit run app.py
+    uv sync
+    ```
+3.  Lancer l'application :
+    ```bash
+    uv run streamlit run app.py
     ```
 
 ## Utilisation
@@ -54,6 +58,24 @@ Application Streamlit simple et efficace pour l'annotation de texte (NER - Named
 
 ## Structure du Projet
 
-*   `app.py` : Code principal de l'application Streamlit.
+*   `app.py` : UI Streamlit (entrée applicative).
+*   `utils.py` : Fonctions pures (chargement, tokenisation, exports BIO/BILOU/JSON).
+*   `tests/` : Tests pytest (fonctions pures + smoke test Streamlit).
 *   `data/` : Dossier contenant les fichiers CSV à annoter.
-*   `docker-compose.yml` : Configuration Docker.
+*   `pyproject.toml` : Métadonnées projet, dépendances (PEP 621), configuration ruff/mypy/pytest.
+*   `uv.lock` : Lockfile reproductible.
+*   `Dockerfile` / `docker-compose.yml` : Conteneurisation.
+*   `AUDIT.md` : Audit qualité + roadmap d'évolution.
+
+## Développement
+
+```bash
+uv sync --all-groups          # installe runtime + dev deps
+uv run pytest                 # tests + couverture
+uv run ruff check .           # lint
+uv run ruff format .          # format
+uv run mypy utils.py          # type-checking
+uv run pre-commit install     # hooks git (à faire 1 fois)
+```
+
+La CI GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) lance lint, mypy, tests et build Docker à chaque push/PR sur `main`.
