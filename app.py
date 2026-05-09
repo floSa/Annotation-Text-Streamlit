@@ -296,21 +296,25 @@ def main():
         with st.container(border=True):
             annotated_text(*create_annotated_text_view(current_text, current_annotations))
 
-        # Liste Annotations current (GRID 2 COLUMNS)
+        # Liste Annotations current : grille 2 colonnes, pill + X collé, sans encadré
         if current_annotations:
-            st.markdown("#### Annotations actives")
-
+            st.markdown(f"#### Annotations actives ({len(current_annotations)})")
             cols_grid = st.columns(2)
             for i, annot in enumerate(current_annotations):
-                with cols_grid[i % 2].container(border=True):
-                    c_pill, c_del = st.columns([8, 1])
+                with cols_grid[i % 2]:
+                    c_pill, c_del, _ = st.columns(
+                        [0.55, 0.10, 0.35], vertical_alignment="center", gap="small"
+                    )
                     with c_pill:
-                        # Utilisation de annotated_text pour le style pillule
                         color = st.session_state.labels.get(annot["label"], "#CCCCCC")
                         annotated_text((annot["text"], annot["label"], color))
-
                     with c_del:
-                        if st.button("❌", key=f"del_{i}", help="Supprimer"):
+                        if st.button(
+                            "✕",
+                            key=f"del_{i}",
+                            type="tertiary",
+                            help="Supprimer cette annotation",
+                        ):
                             st.session_state.annotations[st.session_state.current_index].pop(i)
                             save_current_state()
                             st.rerun()
