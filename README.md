@@ -1,6 +1,11 @@
 # Service d'Annotation de Texte
 
-Application Streamlit simple et efficace pour l'annotation de texte (NER - Named Entity Recognition) à partir de fichiers CSV.
+**Application Streamlit d'annotation de texte (NER — Named Entity Recognition) à partir de fichiers CSV, sans base de données.**
+
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![uv](https://img.shields.io/badge/uv-0.11-DE5FE9?logo=uv&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-FF4B4B?logo=streamlit&logoColor=white)
 
 ![Démo de l'application](demo.gif)
 

@@ -79,7 +79,7 @@ pour entraîner ou évaluer un modèle NER.
 
 ## 6. Décisions
 
-**Figées ✅**
+**Figées**
 - **Deux fichiers, logique isolée** : `utils.py` (pur, testé) + `app.py` (UI) plutôt
   qu'un monolithe, pour la testabilité.
 - **CSV comme format pivot** : lisible, versionnable, sans base de données.
@@ -87,7 +87,7 @@ pour entraîner ou évaluer un modèle NER.
   (lockfile natif) et la vitesse.
 - **Python 3.12** (l'audit signalait 3.9 EOL, désormais corrigé).
 
-**À trancher 🔲**
+**À trancher**
 - **Ambition cible** : outil interne single-user ou produit multi-user collaboratif ?
   Détermine l'ajout d'auth et le déplacement de la persistance vers une base. Reco par
   défaut : rester single-user local. `<à confirmer>`.
@@ -103,8 +103,8 @@ Synthèse :
 
 0. **Sécurité & assainissement** — `.gitignore`, retrait `.env`, Dockerfile durci, `LICENSE`. ✅
 1. **Fondations qualité** — `pyproject.toml` + uv, ruff/mypy/pytest, CI. ✅ *(branche `chore/phase1-foundations`)*
-2. **Corrections fonctionnelles & UX** — fix BILOU, suppression par identifiant, save débounce, choix de colonne, confirmation + undo, tokenizer. 🔲
-3. **Confort & productivité** — sélection souris, raccourcis clavier, stats dataset, filtres. 🔲
+2. **Corrections fonctionnelles & UX** — fix BILOU, suppression par identifiant, save débounce, choix de colonne, confirmation + undo, tokenizer. ❌
+3. **Confort & productivité** — sélection souris, raccourcis clavier, stats dataset, filtres. ❌
 
 ---
 

@@ -27,7 +27,7 @@
 
 ## 2. Findings détaillés (par priorité)
 
-### 🔴 P0 — Critique (à traiter avant tout autre commit)
+### P0 — Critique (à traiter avant tout autre commit)
 
 | # | Finding | Fichier | Impact |
 |---|---|---|---|
@@ -38,7 +38,7 @@
 
 **Action immédiate P0-1** : révoquer/changer toute donnée sensible que `.env` aurait pu contenir, retirer `.env` du tracking, ré-écrire l'historique git (`git filter-repo --path .env --invert-paths`) puis force-push (le faire en accord avec le user puisque c'est destructif).
 
-### 🟠 P1 — Haute priorité
+### P1 — Haute priorité
 
 | # | Finding | Fichier | Impact |
 |---|---|---|---|
@@ -50,7 +50,7 @@
 | P1-6 | Python 3.9 dans Dockerfile (EOL atteint) | [dockerfile:1](dockerfile#L1) | Pas de patchs sécurité, libs récentes pas garanties. |
 | P1-7 | Pas d'auth alors que `.env` la suggère | — | Fonctionnalité orpheline ; à implémenter ou supprimer du `.env`. |
 
-### 🟡 P2 — Moyenne priorité
+### P2 — Moyenne priorité
 
 | # | Finding | Fichier | Impact |
 |---|---|---|---|
@@ -65,7 +65,7 @@
 | P2-9 | Image Docker = root par défaut | [dockerfile](dockerfile) | Bonne pratique : `USER appuser`. |
 | P2-10 | Pas de HEALTHCHECK | [dockerfile](dockerfile) | Compose ne sait pas si l'app est vivante. |
 
-### 🟢 P3 — Basse priorité (nice-to-have)
+### P3 — Basse priorité (nice-to-have)
 
 - Pas de `pyproject.toml` (PEP 621), pas de lockfile (`uv.lock` / `requirements.lock`).
 - Pas de `LICENSE` à la racine (le repo GitHub en mentionne une, mais le fichier devrait être présent).
@@ -145,12 +145,12 @@ L'ordre des phases est volontaire : **on stabilise avant d'enrichir**. Chaque ph
 
 Si tu veux commencer petit avant la Phase 0 complète :
 
-1. ✏️ Corriger « Extrat » → « Export » dans [app.py:147](app.py#L147).
-2. 🗑️ Supprimer `from io import StringIO` (inutilisé) en [app.py:6](app.py#L6).
-3. 🗑️ Supprimer `convert_to_iob` (identité) dans [utils.py:84-86](utils.py#L84-L86).
-4. 🐍 Passer Python 3.9 → 3.12 dans [dockerfile:1](dockerfile#L1).
-5. 📦 Retirer `version: '3.8'` de [docker-compose.yml:1](docker-compose.yml#L1).
-6. 🚫 Créer un `.gitignore` minimal et y mettre `.env`, `__pycache__/`, `.venv/`, `*.pyc`.
+1. Corriger « Extrat » → « Export » dans [app.py:147](app.py#L147).
+2. Supprimer `from io import StringIO` (inutilisé) en [app.py:6](app.py#L6).
+3. Supprimer `convert_to_iob` (identité) dans [utils.py:84-86](utils.py#L84-L86).
+4. Passer Python 3.9 → 3.12 dans [dockerfile:1](dockerfile#L1).
+5. Retirer `version: '3.8'` de [docker-compose.yml:1](docker-compose.yml#L1).
+6. Créer un `.gitignore` minimal et y mettre `.env`, `__pycache__/`, `.venv/`, `*.pyc`.
 
 Note : **ces quick wins ne remplacent PAS la Phase 0** — il faut quand même purger `.env` de l'historique git.
 

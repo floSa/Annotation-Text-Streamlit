@@ -48,7 +48,7 @@ seulement par un *smoke test* (voir §7).
 
 - **Séparateur** : `;` (imposé par `load_csv`, [utils.py:34](../utils.py#L34)).
 - **Colonne texte** : `text` si présente, **sinon la 1ʳᵉ colonne** ([app.py:237](../app.py#L237)).
-  ⚠️ `utils.py` utilise systématiquement `row.iloc[0]` ([utils.py:151](../utils.py#L151)) ;
+  **Attention** : `utils.py` utilise systématiquement `row.iloc[0]` ([utils.py:151](../utils.py#L151)) ;
   l'app privilégie `text`. Divergence connue si `text` n'est pas la 1ʳᵉ colonne (voir §8).
 - **Colonne `annotations`** : chaîne **JSON** d'une liste d'objets, créée si absente.
 
@@ -66,7 +66,7 @@ Chaque annotation est un dictionnaire :
 ### 4.3 Persistance
 
 `save_current_state()` ([app.py:38](../app.py#L38)) sérialise l'état de session vers la
-colonne `annotations` et **réécrit tout le CSV** (`sep=";"`) à chaque navigation ⬅️ / ➡️
+colonne `annotations` et **réécrit tout le CSV** (`sep=";"`) à chaque navigation « Précédent » / « Suivant »
 et à chaque validation. Simple, mais coûteux en I/O sur gros fichiers (voir §8).
 
 ---
@@ -83,7 +83,7 @@ et à chaque validation. Simple, mais coûteux en I/O sur gros fichiers (voir §
    fois, appliquer partout ».
 3. **Rendu** — `create_annotated_text_view` découpe le texte en segments (texte brut /
    span coloré) passés à `annotated_text`.
-4. **Navigation** — boutons ⬅️ / ➡️ ; chaque changement déclenche une sauvegarde.
+4. **Navigation** — boutons « Précédent » / « Suivant » ; chaque changement déclenche une sauvegarde.
 5. **Export** — sidebar : choix du format → sérialisation → bouton de téléchargement.
 
 ```mermaid
@@ -183,8 +183,8 @@ Couverture mesurée sur `utils` uniquement (`--cov=utils`, `app.py` exclu — vo
 | Conteneur non-root | ✅ `USER app` ([Dockerfile](../Dockerfile)) | Réduit la surface en cas de compromission |
 | Healthcheck | ✅ sonde `/_stcore/health` | Compose détecte un service mort |
 | Échappement des labels | ✅ `html.escape` | Atténue l'XSS via labels utilisateur |
-| `.env` / secrets | 🔲 aucune auth dans le code actuel | L'app est **single-user local** ; pas de gestion de secrets (l'`.env` historique a été retiré — voir [AUDIT.md](../AUDIT.md) P0-1) |
-| Isolation réseau | 🔲 port `8501` exposé sur l'hôte | À placer derrière un reverse-proxy si exposition publique |
+| `.env` / secrets | ❌ aucune auth dans le code actuel | L'app est **single-user local** ; pas de gestion de secrets (l'`.env` historique a été retiré — voir [AUDIT.md](../AUDIT.md) P0-1) |
+| Isolation réseau | ❌ port `8501` exposé sur l'hôte | À placer derrière un reverse-proxy si exposition publique |
 
 > Pas de fichier `SECURITY.md` dédié : l'app est mono-service et sans authentification.
 > Les points de sécurité historiques sont tracés dans [AUDIT.md](../AUDIT.md).
